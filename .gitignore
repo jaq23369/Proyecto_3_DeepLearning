@@ -1,0 +1,20 @@
+# Entorno y secretos
+.venv/
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Sistema
+.DS_Store
+
+# Corridas pesadas de evaluación (los resúmenes CSV sí se suben)
+eval/results/runs/
+
+# Documentos internos del equipo (no se suben)
+docs/contract.md
+docs/feria_checklist.md
