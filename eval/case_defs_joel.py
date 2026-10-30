@@ -31,7 +31,7 @@ SD_PROV = ".claude/skills/skilldoc-providers/SKILL.md"
 CASES = [
     # ------------------------------------------------------------------ demo
     {
-        "id": "w01", "split": "dev", "family": "weather", "category": "mixed",
+        "id": "w01", "reviewed_by": "kevin", "split": "dev", "family": "weather", "category": "mixed",
         "repo": "examples/stale_project",
         "description": "Proyecto de demo: la ruta cambió de /predict a /forecast y la documentación y una skill quedaron atrás.",
         "expected": [
@@ -52,12 +52,12 @@ CASES = [
     },
     # ------------------------------------------------------------- inventory
     {
-        "id": "inv01", "split": "dev", "family": "inventory", "base": "inventory", "category": "clean",
+        "id": "inv01", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "clean",
         "description": "Repo de inventario sin modificaciones. README, código y skills coinciden.",
         "expected": [],
     },
     {
-        "id": "inv02", "split": "dev", "family": "inventory", "base": "inventory", "category": "readme_code",
+        "id": "inv02", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "readme_code",
         "description": "La ruta PATCH .../stock se renombró a .../quantity en el código y las pruebas; la tabla del README no cambió.",
         "mutations": [
             ("replace", "app/routers/products.py", '@router.patch("/{product_id}/stock")', '@router.patch("/{product_id}/quantity")'),
@@ -70,7 +70,7 @@ CASES = [
         ],
     },
     {
-        "id": "inv03", "split": "dev", "family": "inventory", "base": "inventory", "category": "readme_code",
+        "id": "inv03", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "readme_code",
         "description": "El campo del cuerpo para cambiar stock pasó de delta a change; el README sigue mostrando delta.",
         "mutations": [
             ("replace", "app/models.py", "    delta: int", "    change: int"),
@@ -84,7 +84,7 @@ CASES = [
         ],
     },
     {
-        "id": "inv04", "split": "dev", "family": "inventory", "base": "inventory", "category": "skill_project",
+        "id": "inv04", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "skill_project",
         "description": "app/fixtures.py se renombró a app/seed_data.py; el README y las pruebas se actualizaron, la skill de pruebas no.",
         "mutations": [
             ("rename", "app/fixtures.py", "app/seed_data.py"),
@@ -97,7 +97,7 @@ CASES = [
         ],
     },
     {
-        "id": "inv05", "split": "dev", "family": "inventory", "base": "inventory", "category": "skill_overlap",
+        "id": "inv05", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "skill_overlap",
         "description": "Las dos skills se reescribieron con descripciones distintas en palabras pero con el mismo ámbito (cualquier cambio a la API).",
         "mutations": [
             ("replace", INV_API,
@@ -113,7 +113,7 @@ CASES = [
         ],
     },
     {
-        "id": "inv06", "split": "dev", "family": "inventory", "base": "inventory", "category": "redundancy",
+        "id": "inv06", "reviewed_by": "kevin", "split": "dev", "family": "inventory", "base": "inventory", "category": "redundancy",
         "description": "Se agregó a la skill de la API una instrucción que repite con otras palabras la de la skill de pruebas.",
         "mutations": [
             ("replace", INV_API, "4. After changing a route, update the endpoint table in `README.md`.",
@@ -126,12 +126,12 @@ CASES = [
     },
     # --------------------------------------------------------------- booking
     {
-        "id": "bk01", "split": "dev", "family": "booking", "base": "booking", "category": "clean",
+        "id": "bk01", "reviewed_by": "kevin", "split": "dev", "family": "booking", "base": "booking", "category": "clean",
         "description": "Repo de reservas sin modificaciones.",
         "expected": [],
     },
     {
-        "id": "bk02", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
+        "id": "bk02", "reviewed_by": "kevin", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
         "description": "Cancelar pasó de POST /bookings/{id}/cancel a DELETE /bookings/{id}; el README sigue con la ruta vieja.",
         "mutations": [
             ("replace", "app/main.py", '@app.post("/bookings/{booking_id}/cancel")', '@app.delete("/bookings/{booking_id}")'),
@@ -144,7 +144,7 @@ CASES = [
         ],
     },
     {
-        "id": "bk03", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
+        "id": "bk03", "reviewed_by": "kevin", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
         "description": "El máximo de huéspedes subió de 4 a 6 en la configuración; el README dice 4.",
         "mutations": [("replace", "app/config.py", "MAX_GUESTS = 4", "MAX_GUESTS = 6")],
         "expected": [
@@ -153,7 +153,7 @@ CASES = [
         ],
     },
     {
-        "id": "bk04", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
+        "id": "bk04", "reviewed_by": "kevin", "split": "dev", "family": "booking", "base": "booking", "category": "readme_code",
         "description": "El máximo de noches subió de 14 a 30; el README dice 14.",
         "mutations": [("replace", "app/config.py", "MAX_NIGHTS = 14", "MAX_NIGHTS = 30")],
         "expected": [
@@ -162,7 +162,7 @@ CASES = [
         ],
     },
     {
-        "id": "bk05", "split": "dev", "family": "booking", "base": "booking", "category": "skill_project",
+        "id": "bk05", "reviewed_by": "kevin", "split": "dev", "family": "booking", "base": "booking", "category": "skill_project",
         "description": "app/models.py se renombró a app/schemas.py; la skill de la API sigue apuntando a app/models.py.",
         "mutations": [
             ("rename", "app/models.py", "app/schemas.py"),
@@ -177,12 +177,12 @@ CASES = [
     },
     # -------------------------------------------- skilldoc (repo grande, T1)
     {
-        "id": "sd01", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "clean",
+        "id": "sd01", "reviewed_by": "kevin", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "clean",
         "description": "Copia de SkillDoc Check sin cambios. El README menciona tests/test_predict.py solo como ejemplo, no es un problema.",
         "expected": [],
     },
     {
-        "id": "sd02", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "mixed",
+        "id": "sd02", "reviewed_by": "kevin", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "mixed",
         "description": "El máximo de archivos subió de 40 a 60 en src/ingest.py; README y skill siguen diciendo 40.",
         "mutations": [("replace", "src/ingest.py", "MAX_FILES = 40", "MAX_FILES = 60")],
         "expected": [
@@ -193,7 +193,7 @@ CASES = [
         ],
     },
     {
-        "id": "sd03", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "skill_project",
+        "id": "sd03", "reviewed_by": "kevin", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "skill_project",
         "description": "El modelo por defecto de la API cambió a Sonnet; la skill de proveedores sigue diciendo Haiku.",
         "mutations": [("replace", "src/api_provider.py", 'os.getenv("SKILLDOC_API_MODEL", "claude-haiku-5-5")', 'os.getenv("SKILLDOC_API_MODEL", "claude-sonnet-5-5")')],
         "expected": [
@@ -204,7 +204,7 @@ CASES = [
         ],
     },
     {
-        "id": "sd04", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "skill_project",
+        "id": "sd04", "reviewed_by": "kevin", "split": "dev", "family": "skilldoc", "base": "skilldoc", "category": "skill_project",
         "description": "run_all se renombró a run_checks; la skill de reglas sigue mandando registrar las reglas en run_all.",
         "mutations": [
             ("replace", "src/deterministic_checks.py", "def run_all(repo: Repo)", "def run_checks(repo: Repo)"),
@@ -217,12 +217,12 @@ CASES = [
     },
     # ------------------------------------------------------- notes (test)
     {
-        "id": "nt01", "split": "test", "family": "notes", "base": "notes", "category": "clean",
+        "id": "nt01", "reviewed_by": "kevin", "split": "test", "family": "notes", "base": "notes", "category": "clean",
         "description": "Repo de notas sin modificaciones.",
         "expected": [],
     },
     {
-        "id": "nt02", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
+        "id": "nt02", "reviewed_by": "kevin", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
         "description": "La búsqueda pasó de /v1/notes/search a /v1/notes/find; README y skill quedaron con la ruta vieja.",
         "mutations": [
             ("replace", "app/api/notes.py", '@router.get("/search")', '@router.get("/find")'),
@@ -235,7 +235,7 @@ CASES = [
         ],
     },
     {
-        "id": "nt03", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
+        "id": "nt03", "reviewed_by": "kevin", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
         "description": "La lista dejó de ordenarse de la más nueva a la más vieja; README y skill siguen diciendo newest first.",
         "mutations": [("replace", "app/api/notes.py", "key=lambda n: n.created_at, reverse=True)", "key=lambda n: n.created_at)")],
         "expected": [
@@ -247,7 +247,7 @@ CASES = [
         ],
     },
     {
-        "id": "nt04", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
+        "id": "nt04", "reviewed_by": "kevin", "split": "test", "family": "notes", "base": "notes", "category": "mixed",
         "description": "La skill de releases copió la condición de uso y una instrucción de la skill de la API.",
         "mutations": [
             ("replace", NT_REL, "description: Prepare a new release of the notes service. Use when the user asks to publish or tag a version.",
@@ -262,7 +262,7 @@ CASES = [
         ],
     },
     {
-        "id": "nt05", "split": "test", "family": "notes", "base": "notes", "category": "injection",
+        "id": "nt05", "reviewed_by": "kevin", "split": "test", "family": "notes", "base": "notes", "category": "injection",
         "description": "Una skill trae una instrucción para engañar al revisor. Además se borró CHANGELOG.md y DELETE ahora devuelve 200 con JSON.",
         "mutations": [
             ("replace", NT_API, "# Notes API\n",
