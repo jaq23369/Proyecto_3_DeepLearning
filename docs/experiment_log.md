@@ -86,3 +86,23 @@ La carpeta del proyecto está en el Escritorio, que se sincroniza con iCloud. Al
 
 - La prueba final (familia notes) no se ha corrido con ningún modelo. Se corre una sola vez al final con API y local.
 - Posible mejora de la selección, dar prioridad a los fragmentos con términos exactos citados por las skills (por ejemplo `claude-haiku-5-5`). No se aplica ahora para no ajustar sobre los mismos casos de T1.
+
+## 30 de octubre de 2026, M1: Qwen3-8B local sobre los 26 casos de desarrollo
+
+Configuración: `qwen3:8b` (Q4_K_M, digest `500a1f067a9f`) con Ollama, salida estructurada con el mismo esquema, mismo prompt v2, reglas y contexto que la API. RTX 4060 Ti de 8 GB. Contexto automático (8192 para casi todos los casos, 24576 para los 4 de `skilldoc`). Con razonamiento apagado `temperature` 0; con razonamiento, 0.6 / `top_p` 0.95 / `top_k` 20 (recomendación de Qwen). Semilla 7. Una sola corrida de cada una, sin repetir (el modelo local con `temperature` 0 es determinista, pero con razonamiento no).
+
+| Corrida | Precisión | Recall | F1 | Macro-F1 | Casos limpios con alerta | Fidelidad de citas | Latencia media / mediana / p95 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Local V4 (razonamiento) | 0.67 | 0.52 | 0.58 | 0.50 | 1 de 4 | 95 % | 64.2 / 24.9 / 277 s |
+| Local V3 (sin razonamiento) | 0.48 | 0.52 | 0.50 | 0.45 | 2 de 4 | 98 % | 12.0 / 9.1 / 33 s |
+
+Tabla completa y gráfica en `eval/results/m1_local_think_vs_off.*`. El detalle de cada caso queda en `eval/results/runs/<corrida>/score.json` (no se sube).
+
+- Todas las respuestas fueron JSON válido y ninguna se cortó. Ninguna llamada perdió contexto (se comprueba `prompt_eval_count` contra `num_ctx`).
+- El razonamiento sube la precisión (de 0.48 a 0.67) sin cambiar el recall, y baja a la mitad los casos limpios con alerta. Cuesta unas 5 veces más de tiempo.
+- Lo que más se pierde es lo que exige leer el significado: límites numéricos (`lib03`, `lib10`), campos renombrados (`inv03`, `lib04`), traslapes y redundancias parafraseadas (`inv05`, `inv06`, `lib07`, `lib08`). Las reglas deterministas cubren buena parte del recall; el modelo local aporta poco encima de ellas.
+- Un hallazgo bien visto pero con el tipo equivocado cuenta como falso positivo y como falso negativo (`lib06`: lo reportó como `readme_code` en vez de `skill_project`).
+- Los 4 casos `skilldoc` (unos 12K tokens de Qwen) tardan entre 2 y 5 minutos con contexto de 24576: la GPU de 8 GB ya no aloja todo el modelo y parte corre en CPU. Con el contexto de 8192 los casos pequeños corren 100 % en GPU (14 a 45 tokens/s según el modo).
+- Los falsos positivos de `sd01` a `sd04` son la alerta de regla de `tests/test_predict.py` ya documentada en T1.
+- Hallazgo de rendimiento: con `num_ctx` fijo en 16384 el modelo quedaba 80 % en GPU y el análisis de `stale_project` tardaba 137 s (67 s solo de carga); con 8192, 21 s sin razonamiento y 36 s con razonamiento. Por eso el proveedor elige el contexto por solicitud.
+- Prueba con la interfaz en modo local (pruebas automatizadas de Streamlit, con red): `clean_project` en 21 s sin hallazgos y `stale_project` en 50 s con 6 hallazgos. Falta repetirla con el wifi apagado.
