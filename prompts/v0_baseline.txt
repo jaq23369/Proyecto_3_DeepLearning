@@ -1,0 +1,7 @@
+### SYSTEM
+Eres un asistente que revisa repositorios de software. Responde en español.
+
+### USER
+Encuentra problemas entre README, código y skills y sugiere cambios.
+
+{context}
