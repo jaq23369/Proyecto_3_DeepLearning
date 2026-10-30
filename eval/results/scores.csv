@@ -1,3 +1,4 @@
 run_id,provider,model,iteration,thinking,split,n_cases,precision,recall,f1,macro_f1,f1_readme_code,f1_skill_project,f1_skill_overlap,f1_redundancy,clean_alert_pct,citation_fidelity,valid_response_pct,insufficient_evidence,latency_mean_s,latency_median_s,latency_p95_s,input_tokens_mean,output_tokens_mean,cost_total_usd
 20261030-111927_local_V4_selected_m1,local,qwen3:8b,V4,adaptive,dev,26,0.6667,0.5161,0.5818,0.5048,0.5714,0.7143,0.3333,0.4,25.0,0.95,100.0,0,64.2,24.924,277.119,4908,943,0.0
 20261030-114900_local_V3_selected_m1off,local,qwen3:8b,V3,off,dev,26,0.4848,0.5161,0.5,0.4518,0.4706,0.7143,0.2222,0.4,50.0,0.9815,100.0,0,11.954,9.128,33.279,4914,271,0.0
+20261030-121703_api_V4_selected_m1api,api,claude-haiku-5-5,V4,adaptive,dev,26,0.8571,0.9677,0.9091,0.9202,0.8824,0.9412,0.8571,1.0,50.0,1.0,100.0,0,6.175,5.941,9.798,7651,1233,0.03592

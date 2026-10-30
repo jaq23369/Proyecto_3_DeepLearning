@@ -106,3 +106,17 @@ Tabla completa y gráfica en `eval/results/m1_local_think_vs_off.*`. El detalle 
 - Los falsos positivos de `sd01` a `sd04` son la alerta de regla de `tests/test_predict.py` ya documentada en T1.
 - Hallazgo de rendimiento: con `num_ctx` fijo en 16384 el modelo quedaba 80 % en GPU y el análisis de `stale_project` tardaba 137 s (67 s solo de carga); con 8192, 21 s sin razonamiento y 36 s con razonamiento. Por eso el proveedor elige el contexto por solicitud.
 - Prueba con la interfaz en modo local (pruebas automatizadas de Streamlit, con red): `clean_project` en 21 s sin hallazgos y `stale_project` en 50 s con 6 hallazgos. Falta repetirla con el wifi apagado.
+
+## 30 de octubre de 2026, API vs local sobre los 26 casos de desarrollo (V4)
+
+Mismos casos, mismo prompt v2, reglas y esquema. API: Claude Haiku 5.5 con razonamiento adaptativo, una sola corrida. Local: la corrida M1 de arriba. Tabla y gráfica en `eval/results/m1_api_vs_local_dev.*`.
+
+| | Precisión | Recall | F1 | Macro-F1 | Casos limpios con alerta | Fidelidad de citas | Latencia mediana | Costo |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| API (Haiku 5.5) | 0.86 | 0.97 | 0.91 | 0.92 | 2 de 4 | 100 % | 5.9 s | 0.036 USD (0.0014 por caso) |
+| Local (Qwen3-8B) | 0.67 | 0.52 | 0.58 | 0.50 | 1 de 4 | 95 % | 24.9 s | sin factura por solicitud |
+
+- Los 5 falsos positivos de la API son 4 alertas de regla de `tests/test_predict.py` en `skilldoc` (limitación ya documentada) y un traslape reportado en `lib01` (caso limpio de Kevin) entre `loans-api` y `loans-tests`, que el modelo marcó como posible conflicto y las etiquetas no. Revisar con Joel si ese caso limpio es ambiguo antes de la prueba final.
+- El único falso negativo de la API es `sd03` (modelo por defecto en `src/api_provider.py`, fuera del presupuesto de contexto), el mismo que ya se había perdido en T1.
+- La API cuesta unos 0.0014 USD por caso y tarda unos 6 s; el modelo local no cobra por solicitud pero necesita 4 a 10 veces más tiempo y aporta mucho menos recall sobre lo que ya detectan las reglas.
+- Los tokens de entrada no son comparables entre modelos (distinto tokenizador): 7651 de Claude contra 4908 de Qwen para los mismos prompts.
