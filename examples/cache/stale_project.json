@@ -1,0 +1,276 @@
+{
+  "example": "stale_project",
+  "cached_at": "2026-10-29T17:36",
+  "result": {
+    "findings": [
+      {
+        "type": "readme_code",
+        "status": "confirmed",
+        "severity": "high",
+        "summary": "README.md menciona POST /predict, pero esa ruta no está definida en el código.",
+        "evidence": [
+          {
+            "path": "README.md",
+            "start_line": 21,
+            "end_line": 21,
+            "quote": "### `POST /predict`",
+            "verified": true
+          },
+          {
+            "path": "app/main.py",
+            "start_line": 26,
+            "end_line": 27,
+            "quote": "@app.post(\"/forecast\")\ndef forecast(req: ForecastRequest):",
+            "verified": true
+          }
+        ],
+        "reason": "Las rutas declaradas en el código son: GET /cities, GET /health, POST /forecast. La más parecida es POST /forecast en app/main.py:26.",
+        "edit_path": "README.md",
+        "suggested_edit": "Reemplazar `POST /predict` por `POST /forecast` si es la misma operación, o eliminar la referencia si la ruta ya no existe.",
+        "limitations": "",
+        "origin": "rule",
+        "validation_notes": [],
+        "id": "F01"
+      },
+      {
+        "type": "readme_code",
+        "status": "confirmed",
+        "severity": "high",
+        "summary": "El README documenta un campo de respuesta con nombre distinto al que devuelve el código.",
+        "evidence": [
+          {
+            "path": "README.md",
+            "start_line": 32,
+            "end_line": 32,
+            "quote": "{\"city\": \"Guatemala\", \"prediction\": [24.1, 23.8, 25.0]}",
+            "verified": true
+          },
+          {
+            "path": "app/main.py",
+            "start_line": 29,
+            "end_line": 29,
+            "quote": "return {\"city\": req.city, \"forecast\": temps}",
+            "verified": true
+          }
+        ],
+        "reason": "El README documenta la clave \"prediction\" en la respuesta, pero el código devuelve la clave \"forecast\".",
+        "edit_path": "README.md",
+        "suggested_edit": "{\"city\": \"Guatemala\", \"forecast\": [24.1, 23.8, 25.0]}",
+        "limitations": "El README también documenta POST /predict, cuya ruta ya fue reportada por las reglas; este hallazgo cubre solo el nombre del campo.",
+        "origin": "llm",
+        "validation_notes": [],
+        "id": "F02"
+      },
+      {
+        "type": "skill_project",
+        "status": "confirmed",
+        "severity": "high",
+        "summary": ".claude/skills/api-testing/SKILL.md menciona POST /predict, pero esa ruta no está definida en el código.",
+        "evidence": [
+          {
+            "path": ".claude/skills/api-testing/SKILL.md",
+            "start_line": 11,
+            "end_line": 11,
+            "quote": "2. Every test must call `POST /predict` with a valid city and check the `prediction` list.",
+            "verified": true
+          },
+          {
+            "path": "app/main.py",
+            "start_line": 26,
+            "end_line": 27,
+            "quote": "@app.post(\"/forecast\")\ndef forecast(req: ForecastRequest):",
+            "verified": true
+          }
+        ],
+        "reason": "Las rutas declaradas en el código son: GET /cities, GET /health, POST /forecast. La más parecida es POST /forecast en app/main.py:26.",
+        "edit_path": ".claude/skills/api-testing/SKILL.md",
+        "suggested_edit": "2. Every test must call `POST /forecast` with a valid city and check the `forecast` list.",
+        "limitations": "",
+        "origin": "rule",
+        "validation_notes": [
+          "Propuesta de corrección redactada por el modelo."
+        ],
+        "id": "F03"
+      },
+      {
+        "type": "readme_code",
+        "status": "confirmed",
+        "severity": "medium",
+        "summary": "README.md menciona el archivo `config/settings.yaml`, que no existe en el proyecto.",
+        "evidence": [
+          {
+            "path": "README.md",
+            "start_line": 17,
+            "end_line": 17,
+            "quote": "Settings such as the default number of days live in `config/settings.yaml`.",
+            "verified": true
+          }
+        ],
+        "reason": "No hay ningún archivo ni carpeta `config/settings.yaml` entre los archivos del proyecto.",
+        "edit_path": "README.md",
+        "suggested_edit": "Eliminar la mención o corregir la ruta si el archivo se movió.",
+        "limitations": "",
+        "origin": "rule",
+        "validation_notes": [],
+        "id": "F04"
+      },
+      {
+        "type": "readme_code",
+        "status": "confirmed",
+        "severity": "medium",
+        "summary": "La versión mínima de Python del README no coincide con pyproject.toml.",
+        "evidence": [
+          {
+            "path": "README.md",
+            "start_line": 7,
+            "end_line": 7,
+            "quote": "- Python 3.11 or newer",
+            "verified": true
+          },
+          {
+            "path": "pyproject.toml",
+            "start_line": 4,
+            "end_line": 4,
+            "quote": "requires-python = \">=3.12\"",
+            "verified": true
+          }
+        ],
+        "reason": "El README indica Python 3.11 o superior, pero pyproject.toml exige >=3.12.",
+        "edit_path": "README.md",
+        "suggested_edit": "- Python 3.12 or newer",
+        "limitations": "",
+        "origin": "llm",
+        "validation_notes": [],
+        "id": "F05"
+      },
+      {
+        "type": "skill_project",
+        "status": "confirmed",
+        "severity": "medium",
+        "summary": ".claude/skills/api-testing/SKILL.md menciona el archivo `tests/test_predict.py`, que no existe en el proyecto.",
+        "evidence": [
+          {
+            "path": ".claude/skills/api-testing/SKILL.md",
+            "start_line": 10,
+            "end_line": 10,
+            "quote": "1. Tests for the prediction endpoint live in `tests/test_predict.py`.",
+            "verified": true
+          }
+        ],
+        "reason": "No hay ningún archivo ni carpeta `tests/test_predict.py` entre los archivos del proyecto. El archivo existente más parecido es `tests/test_api.py`.",
+        "edit_path": ".claude/skills/api-testing/SKILL.md",
+        "suggested_edit": "Cambiar la referencia por `tests/test_api.py` si es el archivo correcto, o eliminar la mención si el archivo ya no forma parte del proyecto.",
+        "limitations": "",
+        "origin": "rule",
+        "validation_notes": [],
+        "id": "F06"
+      },
+      {
+        "type": "redundancy",
+        "status": "confirmed",
+        "severity": "low",
+        "summary": "La misma instrucción aparece en 2 skills.",
+        "evidence": [
+          {
+            "path": ".claude/skills/api-changes/SKILL.md",
+            "start_line": 11,
+            "end_line": 11,
+            "quote": "4. Always run `pytest tests/` before finishing and paste the summary.",
+            "verified": true
+          },
+          {
+            "path": ".claude/skills/api-testing/SKILL.md",
+            "start_line": 13,
+            "end_line": 13,
+            "quote": "4. Always run `pytest tests/` before finishing and paste the summary.",
+            "verified": true
+          }
+        ],
+        "reason": "Repetir la instrucción en varias skills carga el mismo texto varias veces y obliga a mantener copias sincronizadas.",
+        "edit_path": ".claude/skills/api-changes/SKILL.md",
+        "suggested_edit": "Dejar la instrucción en una sola skill (o en un archivo de referencia compartido) y quitarla de las demás.",
+        "limitations": "",
+        "origin": "rule",
+        "validation_notes": [],
+        "id": "F07"
+      },
+      {
+        "type": "skill_overlap",
+        "status": "possible_conflict",
+        "severity": "medium",
+        "summary": "Las skills api-changes y api-testing usan la misma frase para decir cuándo activarse.",
+        "evidence": [
+          {
+            "path": ".claude/skills/api-changes/SKILL.md",
+            "start_line": 3,
+            "end_line": 3,
+            "quote": "description: Guide for modifying endpoints of the forecast API. Use for any change in the API.",
+            "verified": true
+          },
+          {
+            "path": ".claude/skills/api-testing/SKILL.md",
+            "start_line": 3,
+            "end_line": 3,
+            "quote": "description: Write and update tests for the forecast API. Use for any change in the API.",
+            "verified": true
+          }
+        ],
+        "reason": "Ambas descripciones dicen: \"use for any change in the api.\". Con la misma condición de uso, el asistente no tiene cómo elegir entre ellas.",
+        "edit_path": ".claude/skills/api-testing/SKILL.md",
+        "suggested_edit": "Delimitar cada descripción a su propio caso de uso (por ejemplo, una para escribir pruebas y otra para modificar rutas).",
+        "limitations": "Es un riesgo según el texto; no se observó una ejecución real del asistente.",
+        "origin": "rule",
+        "validation_notes": [],
+        "id": "F08"
+      }
+    ],
+    "files_examined": [
+      ".claude/skills/api-changes/SKILL.md",
+      ".claude/skills/api-testing/SKILL.md",
+      "README.md",
+      "app/__init__.py",
+      "app/main.py",
+      "app/model.py",
+      "pyproject.toml",
+      "requirements.txt",
+      "tests/test_api.py"
+    ],
+    "files_skipped": [],
+    "provider": "api",
+    "model": "claude-haiku-5-5",
+    "prompt_version": "v2",
+    "context_mode": "selected",
+    "context_hash": "11663f40109da8d8",
+    "context_tokens_est": 1207,
+    "usage": {
+      "input_tokens": 5380,
+      "output_tokens": 1817,
+      "cost_usd": 0.001447,
+      "latency_s": 13.142,
+      "calls": 1,
+      "retries": 0
+    },
+    "settings": {
+      "provider": "api",
+      "model": "claude-haiku-5-5",
+      "thinking": "adaptive",
+      "effort": "low",
+      "structured_output": "output_config.format json_schema",
+      "max_tokens": 4000,
+      "budget_tokens": 10000,
+      "validation": {
+        "findings_in": 3,
+        "findings_out": 3,
+        "dropped": 0,
+        "downgraded": 0,
+        "evidence_total": 6,
+        "evidence_verified": 6,
+        "evidence_corrected": 0,
+        "dropped_reasons": []
+      },
+      "iteration": "V4"
+    },
+    "warnings": [],
+    "error": ""
+  }
+}
