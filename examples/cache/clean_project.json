@@ -1,0 +1,56 @@
+{
+  "example": "clean_project",
+  "cached_at": "2026-10-30T12:16",
+  "result": {
+    "findings": [],
+    "files_examined": [
+      ".claude/skills/task-api/SKILL.md",
+      ".claude/skills/task-tests/SKILL.md",
+      "README.md",
+      "app/__init__.py",
+      "app/main.py",
+      "app/schemas.py",
+      "app/store.py",
+      "pyproject.toml",
+      "requirements.txt",
+      "tests/test_api.py"
+    ],
+    "files_skipped": [],
+    "provider": "api",
+    "model": "claude-haiku-5-5",
+    "prompt_version": "v2",
+    "context_mode": "selected",
+    "context_hash": "e612e2a6cb663886",
+    "context_tokens_est": 1473,
+    "usage": {
+      "input_tokens": 5376,
+      "output_tokens": 597,
+      "cost_usd": 0.000836,
+      "latency_s": 3.699,
+      "calls": 1,
+      "retries": 0
+    },
+    "settings": {
+      "provider": "api",
+      "model": "claude-haiku-5-5",
+      "thinking": "adaptive",
+      "effort": "low",
+      "structured_output": "output_config.format json_schema",
+      "max_tokens": 4000,
+      "budget_tokens": 10000,
+      "validation": {
+        "findings_in": 0,
+        "findings_out": 0,
+        "dropped": 0,
+        "downgraded": 0,
+        "evidence_total": 0,
+        "evidence_verified": 0,
+        "evidence_corrected": 0,
+        "dropped_reasons": []
+      },
+      "iteration": "V4"
+    },
+    "warnings": [],
+    "error": ""
+  }
+}
