@@ -64,6 +64,12 @@ ollama pull qwen3:8b
 
 Con el modelo descargado y las dependencias instaladas, el modo local funciona sin red.
 
+Notas de la configuración local (se registran en cada corrida):
+
+- `think` se activa o no según la iteración (V4 lo activa). Con razonamiento apagado se usa `temperature` 0; con razonamiento, los valores que recomienda Qwen (0.6, `top_p` 0.95, `top_k` 20). Semilla fija.
+- El contexto (`num_ctx`) se elige por solicitud entre 8192, 12288, 16384 y 24576, el más chico que alcance. En una GPU de 8 GB, `qwen3:8b` con 8192 cabe completo en la GPU y con 16384 ya no, lo que hace la inferencia mucho más lenta. `SKILLDOC_LOCAL_NUM_CTX` fija un valor.
+- Si el prompt no cabe, Ollama lo recorta en silencio; el proveedor lo detecta y reporta un error en vez de analizar un texto cortado.
+
 ## Uso
 
 Interfaz web:
@@ -92,12 +98,14 @@ python -m eval.build_cases --check      # genera eval/cases/ y eval/cases.jsonl 
 python -m eval.run_eval --provider api --iteration V4 --split dev
 python -m eval.run_eval --provider local --iteration V4 --split test
 python -m eval.score <carpeta de la corrida>
-python -m eval.compare_models
+python -m eval.compare_models --runs api=<corrida> local=<corrida>   # tabla y gráfica pareadas
 python -m eval.compare_tokens --cases sd01 sd02 sd03 inv02 bk03 nt02
 ```
 
 - `run_eval` guarda una fila por caso en `eval/results/runs.csv` (tokens, costo, latencia, hash del contexto, errores) y la salida completa en `eval/results/runs/<corrida>/`. Tiene un tope de gasto (`--max-cost`, 1 USD por defecto).
 - Partición: las familias `weather`, `inventory`, `booking` y `skilldoc` son de desarrollo. La familia `notes` es la prueba final y no se usa para ajustar prompts.
+- Casos: 36 (26 dev y 10 test). Joel escribió 21 (familias `weather`, `inventory`, `booking`, `skilldoc` en dev y `notes` en test) y Kevin 15 (`library` en dev y `tickets` en test). Cada uno revisó las etiquetas del otro (`reviewed_by` en `eval/cases.jsonl`).
+- `eval.score` guarda `score.json` junto a la corrida y una fila por corrida en `eval/results/scores.csv`. `eval.compare_models` solo compara los casos que están en todas las corridas.
 - La regla para emparejar hallazgos con etiquetas está en la sección siguiente.
 - El historial de iteraciones está en `docs/experiment_log.md`.
 
@@ -138,6 +146,6 @@ src/
   cli.py                   uso por consola
 prompts/                   prompts versionados
 eval/                      casos, generador, scripts y resultados
-examples/                  proyectos de ejemplo para la demo
+examples/                  proyectos de ejemplo para la demo (stale_project con problemas, clean_project sin ellos)
 docs/                      registro de experimentos
 ```
