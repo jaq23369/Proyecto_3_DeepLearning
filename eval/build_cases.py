@@ -64,7 +64,11 @@ def _apply(case_dir: Path, op: tuple) -> None:
 
 
 def _files(root: Path) -> list[str]:
-    return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file() and p.name != ".DS_Store")
+    return sorted(
+        p.relative_to(root).as_posix()
+        for p in root.rglob("*")
+        if p.is_file() and p.name != ".DS_Store" and "__pycache__" not in p.parts
+    )
 
 
 def _sync(src: Path, dst: Path) -> None:

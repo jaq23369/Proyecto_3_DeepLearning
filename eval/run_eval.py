@@ -52,7 +52,11 @@ def check_files(case: dict) -> None:
     if "files" not in case:
         return
     root = ROOT / case["repo"]
-    actual = sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file() and p.name != ".DS_Store")
+    actual = sorted(
+        p.relative_to(root).as_posix()
+        for p in root.rglob("*")
+        if p.is_file() and p.name != ".DS_Store" and "__pycache__" not in p.parts
+    )
     extra = sorted(set(actual) - set(case["files"]))
     missing = sorted(set(case["files"]) - set(actual))
     if extra or missing:
