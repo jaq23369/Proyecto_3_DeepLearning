@@ -120,3 +120,18 @@ Mismos casos, mismo prompt v2, reglas y esquema. API: Claude Haiku 5.5 con razon
 - El único falso negativo de la API es `sd03` (modelo por defecto en `src/api_provider.py`, fuera del presupuesto de contexto), el mismo que ya se había perdido en T1.
 - La API cuesta unos 0.0014 USD por caso y tarda unos 6 s; el modelo local no cobra por solicitud pero necesita 4 a 10 veces más tiempo y aporta mucho menos recall sobre lo que ya detectan las reglas.
 - Los tokens de entrada no son comparables entre modelos (distinto tokenizador): 7651 de Claude contra 4908 de Qwen para los mismos prompts.
+
+## 31 de octubre de 2026, modelo local en la máquina de la feria
+
+La feria se presenta en la MacBook Pro de Joel (Apple M3 Max, 36 GB de memoria unificada). Se instaló Ollama 0.40.13 con Homebrew como servicio (arranca solo al iniciar sesión) y se descargó `qwen3:8b` con el mismo digest que usó Kevin (`500a1f067a9f`, Q4_K_M, 8.2B), así que el modelo es idéntico al de la corrida M1.
+
+| Ejemplo | V3 sin razonamiento | V4 con razonamiento |
+| --- | ---: | ---: |
+| `stale_project` | 22.3 s | 42 a 45 s |
+| `clean_project` | 4.6 s | 12 a 14 s |
+
+- El modelo corre 100 % en la GPU con contexto de 8192, a unos 37 a 48 tokens de salida por segundo. La carga inicial tarda 1.8 s.
+- En `stale_project` el modelo local no agregó hallazgos a los 6 de las reglas. No encontró el campo `prediction` contra `forecast` ni la versión de Python. Coincide con M1, el modelo local aporta poco por encima de las reglas.
+- Prueba de la interfaz en modo local (con red): los dos ejemplos sin errores, 41 s y 13 s.
+- Se apagaron las estadísticas de uso de Streamlit (`.streamlit/config.toml`) para que en modo local la aplicación no envíe nada a servicios externos.
+- Falta la prueba con el wifi apagado.
