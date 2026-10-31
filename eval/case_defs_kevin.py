@@ -12,8 +12,9 @@ Familias y partición:
   Junto con la familia notes de Joel forman los 10 casos de la prueba final.
 
 Las familias son distintas a las de Joel y todos los casos de una familia van
-al mismo split. El campo reviewed_by lo llena Joel cuando revise estas
-etiquetas.
+al mismo split. Joel revisó estas etiquetas el 31 de octubre comparando cada
+caso contra su repo base (reviewed_by). lib01 se mantiene como caso limpio: sus
+dos skills separan tareas distintas (código y pruebas) y no compiten.
 """
 
 LIB_API = ".claude/skills/loans-api/SKILL.md"
@@ -24,12 +25,12 @@ TK_DOCS = ".claude/skills/tickets-docs/SKILL.md"
 CASES = [
     # --------------------------------------------------------------- library
     {
-        "id": "lib01", "split": "dev", "family": "library", "base": "library", "category": "clean",
+        "id": "lib01", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "clean",
         "description": "Repo de préstamos de libros sin modificaciones. README, código y skills coinciden.",
         "expected": [],
     },
     {
-        "id": "lib02", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
+        "id": "lib02", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
         "description": "La ruta del historial de un socio pasó de /members/{member}/loans a /members/{member}/history en el código y las pruebas; la tabla del README no cambió.",
         "mutations": [
             ("replace", "app/main.py", '@app.get("/members/{member}/loans")', '@app.get("/members/{member}/history")'),
@@ -42,7 +43,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib03", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
+        "id": "lib03", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
         "description": "El máximo de préstamos activos por socio subió de 3 a 5 en la configuración; el README dice 3.",
         "mutations": [
             ("replace", "app/config.py", "MAX_LOANS = 3", "MAX_LOANS = 5"),
@@ -54,7 +55,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib04", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
+        "id": "lib04", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "readme_code",
         "description": "El campo del cuerpo de POST /loans pasó de member a member_id; el ejemplo del README sigue usando member.",
         "mutations": [
             ("replace", "app/models.py", "    member: str", "    member_id: str"),
@@ -68,7 +69,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib05", "split": "dev", "family": "library", "base": "library", "category": "skill_project",
+        "id": "lib05", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "skill_project",
         "description": "app/config.py se renombró a app/settings.py y el código se actualizó; la skill de la API sigue apuntando a app/config.py.",
         "mutations": [
             ("rename", "app/config.py", "app/settings.py"),
@@ -82,7 +83,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib06", "split": "dev", "family": "library", "base": "library", "category": "skill_project",
+        "id": "lib06", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "skill_project",
         "description": "Cuando no quedan copias, el código ahora responde 400 en vez de 409; la skill de la API sigue pidiendo 409.",
         "mutations": [
             ("replace", "app/main.py", 'raise HTTPException(status_code=409, detail="No copies left")',
@@ -96,7 +97,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib07", "split": "dev", "family": "library", "base": "library", "category": "skill_overlap",
+        "id": "lib07", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "skill_overlap",
         "description": "Las dos skills se reescribieron con descripciones distintas en palabras pero con el mismo ámbito (cualquier cambio de comportamiento de préstamos).",
         "mutations": [
             ("replace", LIB_API,
@@ -112,7 +113,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib08", "split": "dev", "family": "library", "base": "library", "category": "redundancy",
+        "id": "lib08", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "redundancy",
         "description": "Se agregó a la skill de la API una instrucción que repite con otras palabras la de correr pytest de la skill de pruebas.",
         "mutations": [
             ("replace", LIB_API, "4. After changing a route, update the endpoint table in `README.md`.",
@@ -124,7 +125,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib09", "split": "dev", "family": "library", "base": "library", "category": "skill_format",
+        "id": "lib09", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "skill_format",
         "description": "A la skill de pruebas se le borró el campo description del frontmatter, que la especificación de Agent Skills exige.",
         "mutations": [
             ("replace", LIB_TESTS,
@@ -135,7 +136,7 @@ CASES = [
         ],
     },
     {
-        "id": "lib10", "split": "dev", "family": "library", "base": "library", "category": "mixed",
+        "id": "lib10", "reviewed_by": "joel", "split": "dev", "family": "library", "base": "library", "category": "mixed",
         "description": "El plazo de préstamo subió de 14 a 21 días y la multa de 0.50 a 0.75 por día en la configuración; el README sigue con los valores viejos.",
         "mutations": [
             ("replace", "app/config.py", "LOAN_DAYS = 14", "LOAN_DAYS = 21"),
@@ -151,12 +152,12 @@ CASES = [
     },
     # --------------------------------------------------------- tickets (test)
     {
-        "id": "tk01", "split": "test", "family": "tickets", "base": "tickets", "category": "clean",
+        "id": "tk01", "reviewed_by": "joel", "split": "test", "family": "tickets", "base": "tickets", "category": "clean",
         "description": "Repo de mesa de ayuda sin modificaciones.",
         "expected": [],
     },
     {
-        "id": "tk02", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
+        "id": "tk02", "reviewed_by": "joel", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
         "description": "Cerrar un ticket pasó de /close a /resolve y la prioridad normal se renombró a medium; el README quedó con los dos valores viejos.",
         "mutations": [
             ("replace", "helpdesk/routes.py", '@router.post("/{ticket_id}/close")', '@router.post("/{ticket_id}/resolve")'),
@@ -175,7 +176,7 @@ CASES = [
         ],
     },
     {
-        "id": "tk03", "split": "test", "family": "tickets", "base": "tickets", "category": "readme_code",
+        "id": "tk03", "reviewed_by": "joel", "split": "test", "family": "tickets", "base": "tickets", "category": "readme_code",
         "description": "La variable de entorno del límite de título pasó de HELPDESK_MAX_TITLE a HELPDESK_TITLE_LIMIT; el README sigue con el nombre viejo.",
         "mutations": [
             ("replace", "helpdesk/config.py", 'os.getenv("HELPDESK_MAX_TITLE", "80")', 'os.getenv("HELPDESK_TITLE_LIMIT", "80")'),
@@ -187,7 +188,7 @@ CASES = [
         ],
     },
     {
-        "id": "tk04", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
+        "id": "tk04", "reviewed_by": "joel", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
         "description": "La skill de documentación copió la condición de uso de la skill de la API (con otras palabras) y una de sus instrucciones.",
         "mutations": [
             ("replace", TK_DOCS,
@@ -204,7 +205,7 @@ CASES = [
         ],
     },
     {
-        "id": "tk05", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
+        "id": "tk05", "reviewed_by": "joel", "split": "test", "family": "tickets", "base": "tickets", "category": "mixed",
         "description": "El archivo de pruebas se renombró a tests/test_helpdesk.py y el filtro de la lista pasó de status a state; README y skill siguen con lo viejo.",
         "mutations": [
             ("rename", "tests/test_tickets.py", "tests/test_helpdesk.py"),
