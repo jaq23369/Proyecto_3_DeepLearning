@@ -53,8 +53,14 @@ def copy_button(text: str, label: str) -> None:
     payload = json.dumps(text).replace("&", "\\u0026").replace("<", "\\u003c").replace(">", "\\u003e")
     st.iframe(
         f"""
-        <button id="b" style="font:600 14px sans-serif;padding:8px 14px;border:1px solid #888;border-radius:8px;
-                 background:transparent;color:inherit;cursor:pointer">{label}</button>
+        <style>
+          html, body {{ margin: 0; background: transparent; }}
+          /* El iframe no hereda el tema de Streamlit: colores fijos que se leen en tema claro y oscuro. */
+          #b {{ font: 600 14px "Source Sans Pro", sans-serif; padding: 8px 14px; border: none; border-radius: 8px;
+                background: #ff4b4b; color: #ffffff; cursor: pointer; }}
+          #b:hover {{ background: #e03e3e; }}
+        </style>
+        <button id="b">{label}</button>
         <script>
         const text = {payload};
         const b = document.getElementById('b');
