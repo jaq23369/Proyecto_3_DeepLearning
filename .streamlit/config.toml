@@ -1,0 +1,3 @@
+# El modo local promete que nada sale de la máquina: sin estadísticas de uso de Streamlit.
+[browser]
+gatherUsageStats = false
