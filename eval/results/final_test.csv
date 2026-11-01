@@ -1,0 +1,24 @@
+metrica,api,local,baseline
+Modelo,claude-haiku-5-5,qwen3:8b,claude-haiku-5-5
+Razonamiento previo,adaptive,adaptive,off
+Casos,10,10,10
+Macro-F1,1.00,0.69,0.39
+Precisión,1.00,0.83,0.29
+Recall,1.00,0.59,0.71
+F1 (micro),1.00,0.69,0.41
+F1 README vs código,1.00,0.67,0.58
+F1 skill desactualizada,1.00,0.75,0.25
+F1 traslape,1.00,0.67,0.57
+F1 redundancia,1.00,0.67,0.17
+Casos limpios con alerta (%),0,0,100
+Fidelidad de citas,1.00,1.00,0.99
+Respuestas válidas (%),100,100,100
+Evidencia insuficiente (total),0,0,24
+Latencia media (s),5.3,31.5,10.1
+Latencia mediana (s),5.0,31.4,8.8
+Latencia p95 (s),8.1,46.1,14.5
+Tokens de entrada por caso,5676,3357,3502
+Tokens de salida por caso,1143,1050,2532
+Costo total (USD),0.0114,0.0000,0.0162
+Costo por caso (USD),0.00114,0.00000,0.00162
+Memoria cargada (GB) / % en GPU,n/a,5.4 / 100 %,n/a
