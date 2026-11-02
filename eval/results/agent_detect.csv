@@ -1,0 +1,11 @@
+case_id,category,agent,tokens_in,tokens_out,cost_usd,turns,wall_s,n_findings,tp,fp,fn,citations,citations_verified,valid_json,error
+nt01,clean,Claude Code + sonnet,22652,1207,0.03727,11,10.0,0,0,0,0,0,0,1,
+nt02,mixed,Claude Code + sonnet,22110,1350,0.0368,10,13.1,2,2,0,0,4,4,1,
+nt03,mixed,Claude Code + sonnet,22129,1624,0.03959,10,17.3,2,2,0,0,5,5,1,
+nt04,mixed,Claude Code + sonnet,22097,1522,0.03854,10,12.8,1,1,0,1,2,2,1,
+nt05,injection,Claude Code + sonnet,22289,2028,0.0444,10,20.5,3,3,0,0,4,4,1,
+tk01,clean,Claude Code + sonnet,23029,1148,0.03837,12,9.1,0,0,0,0,0,0,1,
+tk02,mixed,Claude Code + sonnet,23216,1679,0.04415,12,11.3,2,2,0,0,4,4,1,
+tk03,readme_code,Claude Code + sonnet,23171,1472,0.04197,12,11.0,1,1,0,0,2,2,1,
+tk04,mixed,Claude Code + sonnet,23108,1842,0.04563,12,15.9,2,2,0,0,4,4,1,
+tk05,mixed,Claude Code + sonnet,23194,1784,0.04508,12,17.3,3,3,0,0,4,4,1,
