@@ -153,3 +153,69 @@ Se corrió una sola vez, con las etiquetas ya congeladas y revisadas de forma cr
 - Los resultados de test son parecidos a los de desarrollo (API F1 0.91 en dev y 1.00 en test, local 0.58 y 0.69). No hay señal de que los prompts se hayan sobreajustado a desarrollo.
 - Cuidado al interpretar: son 10 casos y 17 problemas construidos por el equipo, una sola corrida por configuración. En desarrollo el F1 de la API varió entre 3 y 5 puntos entre corridas iguales. Un F1 de 1.00 aquí quiere decir que no se equivocó en estos casos controlados, no que sea perfecto en repositorios reales.
 - Tokens de entrada no comparables entre modelos (distinto tokenizador).
+
+## 2 de noviembre de 2026, A2: el agente corrige con y sin el diagnóstico
+
+Pregunta: ¿le sirve al agente recibir las tareas de SkillDoc Check en vez de revisar el proyecto por su cuenta? Claude Code real (`claude -p`, Sonnet 5.5, solo herramientas para leer y editar archivos) sobre 6 casos de prueba con 14 problemas, una sesión por caso y condición. Script `eval/compare_agent.py`, tabla completa en `eval/results/agent_handoff.md`.
+
+| | A sin diagnóstico | B con SkillDoc Check |
+| --- | ---: | ---: |
+| Problemas corregidos | 14 de 14 | 14 de 14 |
+| Tokens del agente | 260,316 | 191,048 (27 % menos) |
+| Costo total (agente + SkillDoc Check) | 0.338 USD | 0.253 USD (25 % menos) |
+| Vueltas del agente | 83 | 42 (49 % menos) |
+| Tiempo total | 138 s | 144 s (4 % más) |
+
+- Las dos condiciones corrigen todo y ninguna toca código. La diferencia está en el esfuerzo: con las tareas, el agente da la mitad de vueltas y gasta un cuarto menos.
+- El tiempo total es casi igual porque el análisis de SkillDoc Check (unos 8 s por caso) compensa lo que el agente ahorra. El dinero sí baja, porque SkillDoc Check usa un modelo mucho más barato que el del agente.
+- Sin diagnóstico, el agente agregó a la documentación cosas que nadie pidió. Con las tareas se limitó a lo señalado.
+- En `nt02` la propuesta automática de una regla sugería la ruta equivocada y el agente, como le pide la tarea, lo verificó en el código y usó la ruta correcta.
+- Primera corrida inválida (movida a `eval/results/runs/_invalid/`): Claude Code protege `.claude/` en modo no interactivo y ninguno de los dos agentes pudo editar las skills. No se forzó con permisos desactivados (Claude Code lo bloquea por seguridad); en las copias las skills se movieron a `skills/`, igual para las dos condiciones.
+- Límites: 6 casos pequeños, una sesión por condición. En repositorios grandes es probable que la diferencia crezca porque el agente tendría que explorar más, pero no se midió.
+
+## 2 de noviembre de 2026, experimento A2: el agente con y sin el diagnóstico
+
+Claude Code real (`claude -p`, Sonnet 5.5, solo herramientas para leer y editar archivos) sobre 6 casos de prueba con 14 problemas (`nt02`, `nt03`, `nt05`, `tk02`, `tk04`, `tk05`). Condición A, el agente revisa y corrige por su cuenta. Condición B, recibe las tareas que genera SkillDoc Check (V4). Mismo encuadre en las dos (el código es la fuente de verdad, no tocar `.py`). Script `eval/compare_agent.py`, tabla en `eval/results/agent_handoff.md`.
+
+| Medida | A sin diagnóstico | B con SkillDoc Check | Diferencia |
+| --- | ---: | ---: | ---: |
+| Problemas corregidos | 14 de 14 | 14 de 14 | igual |
+| Tokens del agente | 260,316 | 191,048 | 27 % menos |
+| Costo total (B incluye el análisis de SkillDoc Check) | 0.338 USD | 0.253 USD | 25 % menos |
+| Vueltas del agente | 83 | 42 | 49 % menos |
+| Tiempo del agente | 138 s | 97 s | 30 % menos |
+| Tiempo total (B incluye el análisis) | 138 s | 144 s | 4 % más |
+
+- Sin diagnóstico, el agente agregó cambios que nadie pidió en la documentación. Con las tareas, se limitó a lo señalado y verificó antes de aplicar (en `nt02` descartó una ruta sugerida por una regla que no era la correcta).
+- Primera corrida invalidada (en `eval/results/runs/_invalid/`). Claude Code protege `.claude/` en modo no interactivo y negó todas las ediciones de skills en las dos condiciones. No se forzó con permisos desactivados (Claude Code lo bloquea por seguridad). Se repitió moviendo las skills a `skills/` en las copias temporales.
+- Límites: 6 casos pequeños, una sesión por condición. En repositorios grandes el agente sin diagnóstico explora más, así que la diferencia probablemente crece, pero no se midió. No mide una sesión de desarrollo completa, solo la corrección de los problemas.
+
+### Condición C: diagnóstico local (mismo día)
+
+Se agregó una tercera condición: el agente recibe las tareas de SkillDoc Check en modo local (Qwen3-8B con Ollama en la Mac M3 Max, sin enviar el código a una API). Mismo agente (Claude Code con Sonnet 5.5) y mismos 6 casos.
+
+| | A. Agente solo | B. + SkillDoc por API | C. + SkillDoc local |
+| --- | ---: | ---: | ---: |
+| Problemas corregidos | 14 de 14 | 14 de 14 | 8 de 14 |
+| Costo total | 0.338 USD | 0.253 USD | 0.173 USD (diagnóstico gratis) |
+| Vueltas del agente | 83 | 42 | 28 |
+| Tiempo total | 138 s | 144 s | 266 s |
+
+- El agente solo corrige lo que el modelo local detecta. Se escaparon los problemas que exigen entender el texto (orden de la lista, traslape y redundancia parafraseados, respuesta de DELETE, parámetro de filtro), el mismo límite de la prueba final.
+- En `nt03` y `tk04` el diagnóstico local no encontró nada y el agente recibió una lista vacía. En uso real no se llamaría al agente.
+- Lectura: B es el escenario recomendado (misma calidad, 25 % menos costo, la mitad de vueltas). C es la opción privada y la más barata, a cambio de corregir 8 de 14.
+
+## 2 de noviembre de 2026, experimento D1: revisar con Claude Code contra revisar con SkillDoc Check
+
+Pregunta: ¿cuánto cuesta y qué calidad tiene pedirle a un agente que revise el proyecto, comparado con SkillDoc Check? Solo detección, sin corregir. Claude Code 2.1.296 con Sonnet 5.5 y solo herramientas de lectura, sobre los 10 casos de la prueba final. Se le dio la descripción de los 4 tipos y un formato JSON para poder puntuarlo con las mismas etiquetas. Script `eval/compare_agent_detect.py`, tabla en `eval/results/agent_detect.md`.
+
+| | Claude Code revisando | SkillDoc Check API | SkillDoc Check local |
+| --- | ---: | ---: | ---: |
+| F1 | 0.97 (16 de 17, 0 falsas alarmas) | 1.00 | 0.69 |
+| Costo total | 0.412 USD | 0.011 USD | sin factura |
+| Vueltas | 111 | 10 | 10 |
+| Tiempo medio | 13.8 s | 5.3 s | 31.5 s |
+
+- Calidad casi igual; SkillDoc Check por API cuesta unas 36 veces menos y es unas 2.6 veces más rápido.
+- Claude Code no se equivocó en los casos limpios y todas sus citas existen. Se le escapó la redundancia de `nt04`.
+- La instrucción que recibió Claude Code incluye la descripción de los tipos, así que es una comparación generosa con el agente. Una corrida por caso.
